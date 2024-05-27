@@ -4,7 +4,7 @@ exports.cloudinaryConnect = () => {
 	try {
 		cloudinary.config({
 			//!    ########   Configuring the Cloudinary to Upload MEDIA ########
-			cloud_name: process.env.CLOUD_NAME,
+			cloud_name: "dcj2gzytt",
 			api_key: process.env.CLOUDINARY_PUBLIC_KEY,
 			api_secret: process.env.CLOUDINARY_SECRET_KEY,
 		});
