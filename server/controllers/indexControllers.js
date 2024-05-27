@@ -286,7 +286,7 @@ exports.studentsendmail = catchAsyncError(async (req, res, next) => {
 });
 
 exports.studentsendmailOtp = catchAsyncError(async (req, res, next) => {
-	console.log(req.body)
+  console.log(req.body)
   const student = await Student.findOne({ email: req.body.email }).exec();
   console.log("enter");
   console.log(student);
@@ -352,7 +352,7 @@ exports.studentforgetlinkCode = catchAsyncError(async (req, res, next) => {
 
   if (!user) return next(new ErrorHandler("Invelide Token"));
 
-  const currUser = await Student.findOne({email:user}).select("+password").exec();
+  const currUser = await Student.findOne({ email: user }).select("+password").exec();
   console.log(currUser);
 
   if (!currUser) return next(new ErrorHandler("User not Found"));
@@ -363,7 +363,7 @@ exports.studentforgetlinkCode = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("You alredy used this Code"));
 
   const currentuser = await Student.findById(currUser._id).select("+password").exec();
-  currentuser.password = password ;
+  currentuser.password = password;
   currentuser.resetpasswordToken = 0;
   currentuser.save();
 
@@ -670,8 +670,8 @@ exports.applyForJob = catchAsyncError(async (req, res) => {
   const student = await Student.findById(req.id).exec();
   const employer = await Employer.findById(job.employer).exec();
 
-  const applyed = student.jobapplications.find((jobcurrId) => jobcurrId == jobId  )
-  if(applyed) return next(new ErrorHandler("you have already applied", 400));
+  const applyed = student.jobapplications.find((jobcurrId) => jobcurrId == jobId)
+  if (applyed) return next(new ErrorHandler("you have already applied", 400));
 
   const application = new JobApplication({
     studentId: req.id,
