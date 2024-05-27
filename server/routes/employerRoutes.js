@@ -157,7 +157,6 @@ router.post(
 router.get(
 	'/admin/adds/get',
 	isAuthenticated,
-	isAdmin,
 	getAllAds
 );
 router.delete(
