@@ -5,6 +5,7 @@ const ImageUploader = () => {
   const [image, setImage] = useState(null);
   const [message, setMessage] = useState("");
   const [ads, setAds] = useState([]);
+  const basePath = `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/employer`;
 
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
@@ -23,16 +24,22 @@ const ImageUploader = () => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/employer/admin/adds",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: token, // Include the token in the headers
-          },
-        }
-      );
+      const response = await axios.post(`${basePath}/admin/adds`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: token, // Include the token in the headers
+        },
+      });
+      // const response = await axios.post(
+      //   `http://localhost:8080/employer/admin/adds`,
+      //   formData,
+      //   {
+      //     headers: {
+      //       "Content-Type": "multipart/form-data",
+      //       Authorization: token, // Include the token in the headers
+      //     },
+      //   }
+      // );
       setImage(null);
       setMessage("Image uploaded successfully: " + response.data.message);
       fetchAds(); // Fetch ads after successful upload
@@ -47,14 +54,19 @@ const ImageUploader = () => {
   const fetchAds = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        "http://localhost:8080/employer/admin/adds/get",
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
+      const response = await axios.get(`${basePath}/admin/adds/get`, {
+        headers: {
+          Authorization: token,
+        },
+      });
+      // const response = await axios.get(
+      //   `http://localhost:8080/employer/admin/adds/get`,
+      //   {
+      //     headers: {
+      //       Authorization: token,
+      //     },
+      //   }
+      // );
       setAds(response.data.adds);
     } catch (error) {
       console.error("Error fetching ads:", error);
@@ -63,19 +75,27 @@ const ImageUploader = () => {
 
   useEffect(() => {
     fetchAds();
-  }, []); // Fetch ads on initial render
+  }, []);
 
   const handleDeleteAd = async (id) => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.delete(
-        `http://localhost:8080/employer/admin/adds/delete/${id}`,
+        `${basePath}/admin/adds/delete/${id}`,
         {
           headers: {
             Authorization: token,
           },
         }
       );
+      // const response = await axios.delete(
+      //   `http://localhost:8080/employer/admin/adds/delete/${id}`,
+      //   {
+      //     headers: {
+      //       Authorization: token,
+      //     },
+      //   }
+      // );
       setMessage("Ad deleted successfully");
       fetchAds(); // Fetch ads after successful deletion
     } catch (error) {
