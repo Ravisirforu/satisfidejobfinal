@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import React, { useEffect, useRef } from "react";
 import { CgProfile } from "react-icons/cg";
@@ -7,7 +6,10 @@ import { FaUsersViewfinder } from "react-icons/fa6";
 import { CiEdit } from "react-icons/ci";
 import { IoIosSearch, IoMdMenu } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
-import { currentEmployee, logoutEmployee } from "@/redux/actions/employeeAction";
+import {
+  currentEmployee,
+  logoutEmployee,
+} from "@/redux/actions/employeeAction";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
@@ -50,12 +52,12 @@ const Layout = ({ children, setTab, tab }) => {
 
   const handelLogout = async () => {
     const response = await dispatch(logoutEmployee());
-    if(response == "Signout Employer"){
+    if (response == "Signout Employer") {
       // router.reload()
-    } else{
+    } else {
       toast.error(response);
     }
-  }
+  };
 
   useEffect(() => {
     if (!employee) {
@@ -96,18 +98,16 @@ const Layout = ({ children, setTab, tab }) => {
             </div>
             <div className="sidebar-links">
               <link href="/index.html" />
-  
-                <h3
-                  className={`flex items-center gap-1  cursor-pointer ${
-                    tab === "Main" ? "bg-white text-black" : ""
-                  }`}
-                  onClick={() => handleLinkClick("Main")}
-                >
-                  <MdDashboard /> Dashboard
-                </h3>
 
-                
-              
+              <h3
+                className={`flex items-center gap-1  cursor-pointer ${
+                  tab === "Main" ? "bg-white text-black" : ""
+                }`}
+                onClick={() => handleLinkClick("Main")}
+              >
+                <MdDashboard /> Dashboard
+              </h3>
+
               <h3
                 className={`flex items-center gap-1 cursor-pointer  ${
                   tab === "Profile" ? "bg-white text-black" : ""
@@ -116,31 +116,37 @@ const Layout = ({ children, setTab, tab }) => {
               >
                 <CgProfile /> Profile
               </h3>
-              {
-                !employee?.isAdmin && 
+              {!employee?.isAdmin && (
                 <h3
-                className={`flex items-center gap-1  cursor-pointer ${
-                  tab === "CreateJob" ? "bg-white text-black" : ""
-                }`}
-                onClick={() => handleLinkClick("CreateJob")}
-              >
-                <CiEdit /> Create Job
-              </h3>
-              }
-              {
-                !employee?.isAdmin &&
+                  className={`flex items-center gap-1  cursor-pointer ${
+                    tab === "CreateJob" ? "bg-white text-black" : ""
+                  }`}
+                  onClick={() => handleLinkClick("CreateJob")}
+                >
+                  <CiEdit /> Create Job
+                </h3>
+              )}
+              {!employee?.isAdmin && (
                 <h3
-                className={`flex items-center gap-1  cursor-pointer  ${
-                  tab === "ViewAllJobs" ? "bg-white text-black" : ""
-                }`}
-                onClick={() => handleLinkClick("ViewAllJobs")}
-              >
-                <FaUsersViewfinder /> View all jobs
-              </h3>
-              }
-              
-             
-              
+                  className={`flex items-center gap-1  cursor-pointer  ${
+                    tab === "ViewAllJobs" ? "bg-white text-black" : ""
+                  }`}
+                  onClick={() => handleLinkClick("ViewAllJobs")}
+                >
+                  <FaUsersViewfinder /> View all jobs
+                </h3>
+              )}
+              {employee?.isAdmin && (
+                <h3
+                  className={`flex items-center gap-1  cursor-pointer  ${
+                    tab === "add" ? "bg-white text-black" : ""
+                  }`}
+                  onClick={() => handleLinkClick("add")}
+                >
+                  <FaUsersViewfinder /> Adds
+                </h3>
+              )}
+
               {employee?.isAdmin && (
                 <h3
                   className={`flex items-center gap-1  cursor-pointer ${
@@ -172,15 +178,15 @@ const Layout = ({ children, setTab, tab }) => {
                 </h3>
               )}
               <h3
-                  className={`flex items-center gap-1  cursor-pointer `}
-                  onClick={handelLogout}
-                >
-                  <MdLogout /> Logout
+                className={`flex items-center gap-1  cursor-pointer `}
+                onClick={handelLogout}
+              >
+                <MdLogout /> Logout
               </h3>
             </div>
             <div className="social-links flex gap-5">
               <h5>
-                <ImFacebook2  className="text-[16px] sm:text-[18px]"/>
+                <ImFacebook2 className="text-[16px] sm:text-[18px]" />
               </h5>
               <h5>
                 <BsTwitterX className="text-[16px] sm:text-[18px]" />
@@ -189,7 +195,7 @@ const Layout = ({ children, setTab, tab }) => {
                 <FaInstagram className="text-[16px] sm:text-[18px]" />
               </h5>
               <h5>
-              <FaLinkedin className="text-[16px] sm:text-[18px]" />
+                <FaLinkedin className="text-[16px] sm:text-[18px]" />
               </h5>
             </div>
           </div>
@@ -197,7 +203,9 @@ const Layout = ({ children, setTab, tab }) => {
             <nav className="flex items-center md:items-start">
               <div className="text-whitep-4 text-center flex flex-col items-center w-full">
                 <h1 className="text-2xl font-semibold">Satisfied Job</h1>
-                <h6 className="text-sm">{employee && employee?.jobs?.length} Jobs Found</h6>
+                <h6 className="text-sm">
+                  {employee && employee?.jobs?.length} Jobs Found
+                </h6>
               </div>
 
               <div className="nav-right text-[20px]">

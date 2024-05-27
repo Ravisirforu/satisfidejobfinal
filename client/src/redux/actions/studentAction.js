@@ -7,7 +7,7 @@ import {
   setPage,
   setStudent,
 } from "../sclices/studentSclice";
-const basePath = `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/user`;
+const basePath = `http://localhost:8080/user`;
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -67,7 +67,7 @@ export const registerStudent = (userData) => async (dispatch) => {
     } else {
       throw new Error(response?.data?.message);
     }
-    
+
     // dispatch(setStudent(data.student))
   } catch (error) {
     dispatch(setLoading(false));
@@ -155,13 +155,13 @@ export const submitOtpStudent = (otp) => async (dispatch) => {
       otp, config()
     );
     console.log(response.data)
-    if(response.data.success){
+    if (response.data.success) {
       localStorage.removeItem("token");
       localStorage.setItem("token", response.data.token);
       dispatch(currentStudent());
       return response.data.message;
     }
-    else{
+    else {
       return response.data.massage
     }
     dispatch(setLoading(false));
@@ -240,30 +240,30 @@ export const resetPassword = (password, id) => async (dispatch) => {
 
 export const AllJobs =
   (obj = {}) =>
-  async (dispatch) => {
-    try {
-      dispatch(setLoading(true));
-      const { data } = await axios.post(
-        `${basePath}/student/AllJobs`,
-        obj,
-        config()
-      );
-      dispatch(setAllJobs(data.jobs));
-      dispatch(
-        setPage({
-          totalPages: data.totalPages,
-          currentPage: data.currentPage,
-        })
-      );
-      dispatch(setLoading(false));
-    } catch (error) {
-      dispatch(setLoading(false));
-      console.error(error);
-      dispatch(
-        setError(error?.response?.data?.message || "get current user failed")
-      );
-    }
-  };
+    async (dispatch) => {
+      try {
+        dispatch(setLoading(true));
+        const { data } = await axios.post(
+          `${basePath}/student/AllJobs`,
+          obj,
+          config()
+        );
+        dispatch(setAllJobs(data.jobs));
+        dispatch(
+          setPage({
+            totalPages: data.totalPages,
+            currentPage: data.currentPage,
+          })
+        );
+        dispatch(setLoading(false));
+      } catch (error) {
+        dispatch(setLoading(false));
+        console.error(error);
+        dispatch(
+          setError(error?.response?.data?.message || "get current user failed")
+        );
+      }
+    };
 
 export const applicationSend = (dets) => async (dispatch) => {
   try {
@@ -334,7 +334,7 @@ export const deletUser = (user) => async (dispatch) => {
     });
     dispatch(setLoading(false));
     toast.success("Deleted User")
-    
+
   } catch (error) {
     console.error(error);
     dispatch(setLoading(false));

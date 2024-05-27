@@ -31,7 +31,10 @@ const {
 	avtivateEmployer,
 	deletEmployee,
 	employeesendmailOtp,
-	employeeforgetlinkCode
+	employeeforgetlinkCode,
+	adds,
+	getAllAds,
+	deleteAd
 } = require('../controllers/employerControllers');
 const { isAuthenticated } = require('../middlewares/auth');
 const { isAdmin } = require('../middlewares/adminAuth');
@@ -48,7 +51,7 @@ router.post('/current', isAuthenticated, currentemployer);
 router.post('/signin', employersingin);
 
 // POST /employer/signin
-router.post('/addCompanyDeatils', isAuthenticated , addCompanyDeatils);
+router.post('/addCompanyDeatils', isAuthenticated, addCompanyDeatils);
 
 // POST /employer/signup
 router.post('/signup', employersignup);
@@ -76,7 +79,7 @@ router.post('/job/readall', isAuthenticated, readAllJob);
 // POST /employer/job/readsingle/:id
 router.post('/job/readsingle/:id', isAuthenticated, readSingleJob);
 
-router.post('/job/applicationstatus',isAuthenticated,applicationsStatus)
+router.post('/job/applicationstatus', isAuthenticated, applicationsStatus)
 /* Todo */
 
 // POST /employer/send-mail
@@ -144,6 +147,24 @@ router.post(
 	isAuthenticated,
 	isAdmin,
 	SearchJobs
+);
+router.post(
+	'/admin/adds',
+	isAuthenticated,
+	isAdmin,
+	adds
+);
+router.get(
+	'/admin/adds/get',
+	isAuthenticated,
+	isAdmin,
+	getAllAds
+);
+router.delete(
+	'/admin/adds/delete/:id',
+	isAuthenticated,
+	isAdmin,
+	deleteAd
 );
 
 // ADMIN All employe

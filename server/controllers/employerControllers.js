@@ -13,11 +13,12 @@ const Student = require("../models/studentModel");
 const activationToken = require("../utils/activationToken");
 const sendmailActication = require("../utils/sendmail");
 const jwt = require('jsonwebtoken');
-
+const { uploadImageToCloudinary } = require("../config/imageUploader");
+const addModel = require("../models/adds")
 const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({
-  cloud_name: "dcj2gzytt",
+  cloud_name: "dkhb9ioku",
   api_key: process.env.CLOUDINARY_PUBLIC_KEY,
   api_secret: process.env.CLOUDINARY_SECRET_KEY,
 });
@@ -32,47 +33,47 @@ exports.currentemployer = catchAsyncError(async (req, res, next) => {
 });
 
 exports.employersignup = catchAsyncError(async (req, res, next) => {
-  const {firstname, lastname,email,contact,city,password,organisationname} = req.body;
+  const { firstname, lastname, email, contact, city, password, organisationname } = req.body;
 
   const employerCurrent = {
-		firstname,
+    firstname,
     lastname,
-		email,
-		contact,
-		city,
-		password,
+    email,
+    contact,
+    city,
+    password,
     organisationname
-	}
+  }
 
-	const ActivationCode = Math.floor(1000 + Math.random() * 9000);
-	console.log(ActivationCode)
+  const ActivationCode = Math.floor(1000 + Math.random() * 9000);
+  console.log(ActivationCode)
 
-	const data = { name: firstname, activationCode: ActivationCode };
-	console.log(data)
+  const data = { name: firstname, activationCode: ActivationCode };
+  console.log(data)
 
-	try {
-		await sendmailActication(
-		  res,
-		  next,
-		  email,
-		  "Verification code",
-		  "activationMail.ejs",
-		  data
-		);
-		let token = await activationToken(employerCurrent, ActivationCode);
-		console.log(token)
-		let options = {
-		  httpOnly: true,
-		  secure: true,
-		};
-		res.status(200).cookie("token", token, options).json({
-		  succcess: true,
-		  message: "successfully send mail pleas check your Mail",
-		  Token: token,
-		});
-	} catch (error) {
-		return next(new ErrorHandler(error.message, 400));
-	}
+  try {
+    await sendmailActication(
+      res,
+      next,
+      email,
+      "Verification code",
+      "activationMail.ejs",
+      data
+    );
+    let token = await activationToken(employerCurrent, ActivationCode);
+    console.log(token)
+    let options = {
+      httpOnly: true,
+      secure: true,
+    };
+    res.status(200).cookie("token", token, options).json({
+      succcess: true,
+      message: "successfully send mail pleas check your Mail",
+      Token: token,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
   // const isExist = await Employer.findOne({email:email});
   // if(isExist) return next(new ErrorHandler("Employer with this email already exists", 401));
   // const employer = await new Employer(req.body).save();
@@ -81,48 +82,48 @@ exports.employersignup = catchAsyncError(async (req, res, next) => {
 });
 
 exports.avtivateEmployer = catchAsyncError(async (req, res, next) => {
-	let { activationCode } = req.body;
+  let { activationCode } = req.body;
   console.log(activationCode)
 
-	if (!activationCode) return next(new ErrorHandler("Provide Activation Code"));
+  if (!activationCode) return next(new ErrorHandler("Provide Activation Code"));
 
-	// const token = req.cookies || req.headers.authorization;
-	const token = req.headers.authorization;
+  // const token = req.cookies || req.headers.authorization;
+  const token = req.headers.authorization;
   console.log(token)
-	const {user,ActivationCode} = await jwt.verify(token,process.env.JWT_TOKEN_SECRET);
+  const { user, ActivationCode } = await jwt.verify(token, process.env.JWT_TOKEN_SECRET);
 
-	console.log(user)
+  console.log(user)
 
-	if (!user) return next(new ErrorHandler("Invelide Token"));
-	const isEmailExit = await Employer.findOne({ email: user.email });
-	console.log(isEmailExit)
+  if (!user) return next(new ErrorHandler("Invelide Token"));
+  const isEmailExit = await Employer.findOne({ email: user.email });
+  console.log(isEmailExit)
 
   if (isEmailExit)
-    return next(new ErrorHandler("User With This Email Address Already Exits",401));
+    return next(new ErrorHandler("User With This Email Address Already Exits", 401));
 
-	if (activationCode != ActivationCode)
+  if (activationCode != ActivationCode)
     return next(new ErrorHandler("Wrong Activation Code"));
 
   let { firstname,
     lastname,
-		email,
-		contact,
-		city,
-		password,
+    email,
+    contact,
+    city,
+    password,
     organisationname } =
     user;
-    console.log(user)
-	const newEmployer = await Employer.create({
-		firstname,
+  console.log(user)
+  const newEmployer = await Employer.create({
+    firstname,
     lastname,
-		email,
-		contact,
-		city,
-		password,
+    email,
+    contact,
+    city,
+    password,
     organisationname
-	})
+  })
   console.log(newEmployer)
-	sendtoken(newEmployer, 200, res, req);
+  sendtoken(newEmployer, 200, res, req);
 
 });
 
@@ -155,18 +156,18 @@ exports.addCompanyDeatils = catchAsyncError(async (req, res, next) => {
   // }
   console.log(req.body)
 
-  const { industry , companySize , location , website , socialMedia} = req.body;
-  if(!industry ||
-     !companySize ||
-     !location || 
-     !website) return next(new ErrorHandler("Pleas Provide all details",401));
+  const { industry, companySize, location, website, socialMedia } = req.body;
+  if (!industry ||
+    !companySize ||
+    !location ||
+    !website) return next(new ErrorHandler("Pleas Provide all details", 401));
 
 
-  const employer = await Employer.findByIdAndUpdate(req.id,req.body)
+  const employer = await Employer.findByIdAndUpdate(req.id, req.body)
 
-  if(employer){
+  if (employer) {
     console.log("enter")
-    res.status(200).json({ message: "Password Changed Successfully" , employer });
+    res.status(200).json({ message: "Password Changed Successfully", employer });
 
   }
 
@@ -178,13 +179,13 @@ exports.addCompanyDeatils = catchAsyncError(async (req, res, next) => {
   // employer.socialMedia = socialMedia
   // await employer.save();
 
-  
-  
+
+
 });
 
 
 exports.employesendmailOtp = catchAsyncError(async (req, res, next) => {
-	console.log(req.body)
+  console.log(req.body)
   const employer = await Employer.findOne({ email: req.body.email }).exec();
   console.log("enter");
   console.log(employer);
@@ -212,7 +213,7 @@ exports.employesendmailOtp = catchAsyncError(async (req, res, next) => {
       data
     );
     let token = await activationToken(employer.email, ActivationCode);
-  
+
 
     let options = {
       httpOnly: true,
@@ -251,7 +252,7 @@ exports.EmployerforgetlinkCode = catchAsyncError(async (req, res, next) => {
 
   if (!user) return next(new ErrorHandler("Invelide Token"));
 
-  const currUser = await Employer.findOne({email:user}).select("+password").exec();
+  const currUser = await Employer.findOne({ email: user }).select("+password").exec();
   console.log(currUser);
 
   if (!currUser) return next(new ErrorHandler("User not Found"));
@@ -273,7 +274,7 @@ exports.EmployerforgetlinkCode = catchAsyncError(async (req, res, next) => {
   // currUser.save();
   // currUser.password = ""
 
-  
+
 
   res.status(201).json({
     succcess: true,
@@ -283,7 +284,7 @@ exports.EmployerforgetlinkCode = catchAsyncError(async (req, res, next) => {
 
 // exports.addCompanyDetails = catchAsyncError(async (req, res, next) => {
 //   const employer = await Employer.findById(req.id);
-  
+
 // });
 
 exports.employersignout = catchAsyncError(async (req, res, next) => {
@@ -307,7 +308,7 @@ exports.employersendmail = catchAsyncError(async (req, res, next) => {
 });
 
 exports.employeesendmailOtp = catchAsyncError(async (req, res, next) => {
-	console.log(req.body)
+  console.log(req.body)
   const employee = await Employer.findOne({ email: req.body.email }).exec();
 
   if (!employee) {
@@ -370,7 +371,7 @@ exports.employeeforgetlinkCode = catchAsyncError(async (req, res, next) => {
 
   if (!user) return next(new ErrorHandler("Invelide Token"));
 
-  const currUser = await Employer.findOne({email:user}).select("+password").exec();
+  const currUser = await Employer.findOne({ email: user }).select("+password").exec();
   console.log(currUser);
 
   if (!currUser) return next(new ErrorHandler("User not Found"));
@@ -381,7 +382,7 @@ exports.employeeforgetlinkCode = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("You alredy used this Code"));
 
   const currentuser = await Employer.findById(currUser._id).select("+password").exec();
-  currentuser.password = password ;
+  currentuser.password = password;
   currentuser.resetpasswordToken = 0;
   currentuser.save();
 
@@ -636,10 +637,10 @@ exports.SearchUsers = catchAsyncError(async (req, res, next) => {
     const searchRegex = new RegExp(query, "i");
 
     const queryObj = {
-		$or: [
-			{ name: { $regex: searchRegex } }, // Search in first name
-			{ email: { $regex: searchRegex } },  // Search in last name
-		]
+      $or: [
+        { name: { $regex: searchRegex } }, // Search in first name
+        { email: { $regex: searchRegex } },  // Search in last name
+      ]
     };
 
     return Student.find(queryObj);
@@ -672,12 +673,12 @@ exports.SearchEmploye = catchAsyncError(async (req, res, next) => {
     const searchRegex = new RegExp(query, "i");
 
     const queryObj = {
-		$or: [
-			{ firstname: { $regex: searchRegex } }, // Search in first name
-			{ lastname: { $regex: searchRegex } }, 
-			{ email: { $regex: searchRegex } },  // Search in last name
-			{ organisationname: { $regex: searchRegex } },
-		]
+      $or: [
+        { firstname: { $regex: searchRegex } }, // Search in first name
+        { lastname: { $regex: searchRegex } },
+        { email: { $regex: searchRegex } },  // Search in last name
+        { organisationname: { $regex: searchRegex } },
+      ]
     };
 
     return Employer.find(queryObj);
@@ -737,16 +738,16 @@ exports.DeleteUser = catchAsyncError(async (req, res, next) => {
 });
 
 exports.DeleteEmployer = catchAsyncError(async (req, res, next) => {
-	try {
-	  const id = req.params.id;
-	  const employer = await Employer.findByIdAndDelete(id);
-    await Job.deleteMany({employer: id});
-	  const allemployer = await Employer.find();
-	  res.json({ success: true, message: "Delete User", user: allemployer });
-	} catch (error) {
-	  console.error("Error in SearchUsers route:", error);
-	  res.status(500).json({ success: false, error: "Internal Server Error" });
-	}
+  try {
+    const id = req.params.id;
+    const employer = await Employer.findByIdAndDelete(id);
+    await Job.deleteMany({ employer: id });
+    const allemployer = await Employer.find();
+    res.json({ success: true, message: "Delete User", user: allemployer });
+  } catch (error) {
+    console.error("Error in SearchUsers route:", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
 });
 
 exports.MakeAdmin = catchAsyncError(async (req, res, next) => {
@@ -852,16 +853,16 @@ exports.AdminResgisterState = catchAsyncError(async (req, res, next) => {
       const registrationsCount = await Student.countDocuments({
         createdAt: { $gte: date, $lt: nextDate },
       });
-	//   Format date as '2 May' or '3 May' without the year
-        const formattedDate = date.toLocaleDateString('en-GB', {
-            day: 'numeric', month: 'short'
-        });
+      //   Format date as '2 May' or '3 May' without the year
+      const formattedDate = date.toLocaleDateString('en-GB', {
+        day: 'numeric', month: 'short'
+      });
       registrationsLastSevenDays.push({
         date: formattedDate, // Format date as YYYY-MM-DD
         users: registrationsCount,
       });
     }
-	res.json(registrationsLastSevenDays);
+    res.json(registrationsLastSevenDays);
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");
@@ -935,5 +936,72 @@ exports.deletEmployee = catchAsyncError(async (req, res, next) => {
     status: true,
     message: "Delete Successfully",
   });
-  
+
 });
+
+exports.adds = async (req, res) => {
+  try {
+    const thumbnail = req.files.image;
+
+    // Upload the Thumbnail to Cloudinary
+    const thumbnailImage = await uploadImageToCloudinary(
+      thumbnail,
+      process.env.FOLDER_NAME
+    );
+
+    const ad = await addModel.create({
+      image: thumbnailImage.secure_url,
+    });
+
+    res.status(200).send({
+      success: true,
+      message: "Ad created successfully",
+      ad,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error in create ad API!",
+      error: error.message,
+    });
+  }
+};
+exports.getAllAds = async (req, res) => {
+  try {
+    const adds = await addModel.find({});
+    res.status(200).send({
+      success: true,
+      adds
+    })
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error in geting adds API!",
+      error: error.message,
+    });
+  }
+};
+exports.deleteAd = async (req, res) => {
+  try {
+    const adId = req.params.id;
+    const deletedAd = await addModel.findByIdAndDelete(adId);
+
+    if (!deletedAd) {
+      return res.status(404).json({
+        success: false,
+        message: "Ad not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Ad deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error in deleting ad API!",
+      error: error.message,
+    });
+  }
+};
