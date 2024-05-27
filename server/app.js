@@ -11,10 +11,17 @@ dotenv.config({ path: './.env' });
 connectDb.databaseConnect();
 
 //Express FileUpload
-const fileupload = require('express-fileupload');
-app.use(fileupload({
-	useTempFiles: true
-}));
+const { cloudinaryConnect } = require("./config/cloudinary");
+const fileUpload = require("express-fileupload");
+
+
+app.use(
+	fileUpload({
+		useTempFiles: true,
+		tempFileDir: "/tmp/",
+	})
+);
+cloudinaryConnect();
 
 // Express-Session , Cookie-parser
 const cookieparser = require('cookie-parser');
