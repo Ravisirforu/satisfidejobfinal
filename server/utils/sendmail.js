@@ -15,10 +15,10 @@ let sendmailActication = async (res, next, email, subject, template, data) => {
         //   pass:  process.env.MAIL_EMAIL_PASSWORD,
         // },
         auth: {
-            // user: "satisfiedjob4u@gmail.com",
-            user: "rishimaheshwari040@gmail.com",
-            // pass:  "ehog gojy pfil inuc",
-            pass: "nkoq nazx fbby kurf",
+            user: "satisfiedjob4u@gmail.com",
+            // user: "rishimaheshwari040@gmail.com",
+            pass: "ehog gojy pfil inuc",
+            // pass: "nkoq nazx fbby kurf",
         },
     });
     console.log("called")
